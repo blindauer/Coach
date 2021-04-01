@@ -18,6 +18,7 @@ class Coach {
     private var workout: Workout?
     private var workoutSteps: [WorkoutStep]?
     private var currentStepIndex = 0
+    var currentExerciseID: UUID?
     
     func announce(_ string: String) {
         announcer.speak(string)
@@ -56,6 +57,9 @@ extension Coach: Coaching {
         let nextStepDelay: TimeInterval
         
         switch step {
+        case .id(let id):
+            currentExerciseID = id
+            nextStepDelay = 0
         case .delay(let delay):
             nextStepDelay = delay
         case .announce(let announcement):
@@ -72,6 +76,7 @@ extension Coach: Coaching {
 
 extension Coach {
     private enum WorkoutStep {
+        case id(UUID)
         case delay(TimeInterval)
         case announce(String)
     }
@@ -82,6 +87,7 @@ extension Coach {
             steps.append(.announce("\(exercise.name), \(Int(exercise.duration)) seconds, starting in 5 seconds."))
             steps.append(.delay(5))
             steps.append(contentsOf: countdown(from: 5))
+            steps.append(.id(exercise.id))
             steps.append(.announce("Go!"))
             steps.append(.delay(exercise.duration - 10))
             steps.append(.announce("10 seconds left."))
