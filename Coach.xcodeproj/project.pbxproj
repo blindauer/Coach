@@ -13,6 +13,9 @@
 		A20B26CA260C48F800E11543 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20B26C9260C48F800E11543 /* Preview Assets.xcassets */; };
 		A20B26D5260C48F900E11543 /* CoachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B26D4260C48F900E11543 /* CoachTests.swift */; };
 		A20B26E0260C48F900E11543 /* CoachUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B26DF260C48F900E11543 /* CoachUITests.swift */; };
+		A20B26F1260C491400E11543 /* Coach.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B26F0260C491400E11543 /* Coach.swift */; };
+		A2FCF6C02612D17400CB3605 /* Announcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FCF6BF2612D17400CB3605 /* Announcer.swift */; };
+		A2FCF6C82612D5EB00CB3605 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FCF6C72612D5EB00CB3605 /* Workout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +48,9 @@
 		A20B26DB260C48F900E11543 /* CoachUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoachUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A20B26DF260C48F900E11543 /* CoachUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachUITests.swift; sourceTree = "<group>"; };
 		A20B26E1260C48F900E11543 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20B26F0260C491400E11543 /* Coach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coach.swift; sourceTree = "<group>"; };
+		A2FCF6BF2612D17400CB3605 /* Announcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcer.swift; sourceTree = "<group>"; };
+		A2FCF6C72612D5EB00CB3605 /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,8 +101,11 @@
 		A20B26C1260C48F700E11543 /* Coach */ = {
 			isa = PBXGroup;
 			children = (
+				A28058AA2615A2E000B4B033 /* Models */,
+				A28058AB2615A2F600B4B033 /* Views */,
+				A20B26F0260C491400E11543 /* Coach.swift */,
+				A2FCF6BF2612D17400CB3605 /* Announcer.swift */,
 				A20B26C2260C48F700E11543 /* CoachApp.swift */,
-				A20B26C4260C48F700E11543 /* ContentView.swift */,
 				A20B26C6260C48F800E11543 /* Assets.xcassets */,
 				A20B26CB260C48F800E11543 /* Info.plist */,
 				A20B26C8260C48F800E11543 /* Preview Content */,
@@ -128,6 +137,22 @@
 				A20B26E1260C48F900E11543 /* Info.plist */,
 			);
 			path = CoachUITests;
+			sourceTree = "<group>";
+		};
+		A28058AA2615A2E000B4B033 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A2FCF6C72612D5EB00CB3605 /* Workout.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A28058AB2615A2F600B4B033 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A20B26C4260C48F700E11543 /* ContentView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,6 +285,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A20B26C5260C48F700E11543 /* ContentView.swift in Sources */,
+				A2FCF6C02612D17400CB3605 /* Announcer.swift in Sources */,
+				A20B26F1260C491400E11543 /* Coach.swift in Sources */,
+				A2FCF6C82612D5EB00CB3605 /* Workout.swift in Sources */,
 				A20B26C3260C48F700E11543 /* CoachApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
