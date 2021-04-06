@@ -13,12 +13,15 @@ protocol Coaching {
     func stopWorkout()
 }
 
-class Coach {
+class Coach: ObservableObject {
     private let announcer = Announcer()
     private var workout: Workout?
+    private var exercises: [Exercise]?
     private var workoutSteps: [WorkoutStep]?
-    private var currentStepIndex = 0
-    var currentExerciseID: UUID?
+    
+    @Published var workoutInProgress = false
+    @Published var currentExercise: Exercise?
+    @Published var timeLeft: TimeInterval?
     
     func announce(_ string: String) {
         announcer.speak(string)
@@ -28,8 +31,12 @@ class Coach {
 extension Coach: Coaching {
     func start(workout: Workout) {
         self.workout = workout
-        let workoutSteps = steps(from: workout)
-        schedule(steps: workoutSteps)
+        self.exercises = workout.exercises
+        self.workoutInProgress = true
+        
+        if let exercise = exercises?.first {
+            perform(exercise: exercise)
+        }
     }
     
     func pauseWorkout() {
@@ -37,29 +44,37 @@ extension Coach: Coaching {
     }
     
     func stopWorkout() {
-        // TODO
+        workout = nil
+        exercises = nil
+        workoutInProgress = false
+    }
+    
+    private func perform(exercise: Exercise) {
+        currentExercise = exercise
+        let exerciseSteps = steps(from: exercise)
+        schedule(steps: exerciseSteps)
     }
     
     private func schedule(steps: [WorkoutStep]) {
-        currentStepIndex = 0
-        workoutSteps = steps
-        
-        scheduleCurrentStep()
-    }
-    
-    private func scheduleCurrentStep() {
-        guard let steps = workoutSteps, currentStepIndex < steps.count else {
-            stopWorkout()
+        guard let currentStep = steps.first else {
+            // Done with current exercise. Do next.
+            exercises?.removeFirst()
+            if let exercise = exercises?.first {
+                perform(exercise: exercise)
+            } else {
+                stopWorkout()
+            }
             return
         }
         
-        let step = steps[currentStepIndex]
+        workoutSteps = Array(steps.dropFirst())
+        schedule(step: currentStep)
+    }
+    
+    private func schedule(step: WorkoutStep) {
         let nextStepDelay: TimeInterval
         
         switch step {
-        case .id(let id):
-            currentExerciseID = id
-            nextStepDelay = 0
         case .delay(let delay):
             nextStepDelay = delay
         case .announce(let announcement):
@@ -67,34 +82,30 @@ extension Coach: Coaching {
             nextStepDelay = 0
         }
         
-        currentStepIndex += 1
         DispatchQueue.main.asyncAfter(deadline: .now() + nextStepDelay) { [weak self] in
-            self?.scheduleCurrentStep()
+            guard let self = self else { return }
+            guard let remainingSteps = self.workoutSteps else { return }
+            self.schedule(steps: remainingSteps)
         }
     }
 }
 
 extension Coach {
     private enum WorkoutStep {
-        case id(UUID)
         case delay(TimeInterval)
         case announce(String)
     }
     
-    private func steps(from workout: Workout) -> [WorkoutStep] {
+    private func steps(from exercise: Exercise) -> [WorkoutStep] {
         var steps = [WorkoutStep]()
-        for exercise in workout.exercises {
-            steps.append(.announce("\(exercise.name), \(Int(exercise.duration)) seconds, starting in 5 seconds."))
-            steps.append(.delay(5))
-            steps.append(contentsOf: countdown(from: 5))
-            steps.append(.id(exercise.id))
-            steps.append(.announce("Go!"))
-            steps.append(.delay(exercise.duration - 10))
-            steps.append(.announce("10 seconds left."))
-            steps.append(.delay(5))
-            steps.append(contentsOf: countdown(from: 5))
-        }
-        
+        steps.append(.announce("\(exercise.name), \(Int(exercise.duration)) seconds, starting in 10 seconds."))
+        steps.append(.delay(10))
+        steps.append(contentsOf: countdown(from: 5))
+        steps.append(.announce("Go!"))
+        steps.append(.delay(exercise.duration - 10))
+        steps.append(.announce("10 seconds left."))
+        steps.append(.delay(5))
+        steps.append(contentsOf: countdown(from: 5))
         return steps
     }
     

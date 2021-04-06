@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    private let coach = Coach()
-    private let workout = Workout.data[0]
+    @StateObject private var coach = Coach()
+    private var workout = Workout.data[0]
     
     var body: some View {
         VStack {
@@ -17,13 +17,17 @@ struct ContentView: View {
                 .font(.headline)
             Spacer()
             Button(action: {
-                coach.start(workout: workout)
+                if coach.workoutInProgress {
+                    coach.stopWorkout()
+                } else {
+                    coach.start(workout: workout)
+                }
             }, label: {
-                PlayButtonView()
+                PlayButtonView(workoutInProgress: coach.workoutInProgress)
             })
             List {
                 ForEach(workout.exercises) { exercise in
-                    ExerciseRowView(exercise: exercise)
+                    ExerciseRowView(coach: coach, exercise: exercise)
                 }
             }
         }
@@ -31,8 +35,18 @@ struct ContentView: View {
 }
 
 struct PlayButtonView: View {
+    let workoutInProgress: Bool
+    
     var body: some View {
-        Image(systemName:"play.fill")
+        let buttonImage = VStack {
+            if workoutInProgress {
+                Image(systemName:"pause.fill")
+            } else {
+                Image(systemName:"play.fill")
+            }
+        }
+        
+        buttonImage
             .font(.title)
             .foregroundColor(.blue)
             .padding()
@@ -44,11 +58,17 @@ struct PlayButtonView: View {
 }
 
 struct ExerciseRowView: View {
+    @StateObject var coach: Coach
     let exercise: Exercise
     
     var body: some View {
         HStack {
-            Text(exercise.name)
+            if let current = coach.currentExercise, exercise.id == current.id {
+                Text(exercise.name)
+                    .bold()
+            } else {
+                Text(exercise.name)
+            }
             Spacer()
             Text("\(Int(exercise.duration))s")
         }
