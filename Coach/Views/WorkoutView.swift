@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  WorkoutView.swift
 //  Coach
 //
 //  Created by Bradley Lindauer on 3/24/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct WorkoutView: View {
     @StateObject private var coach = Coach()
     private var workout = Workout.data[0]
     
@@ -25,11 +25,17 @@ struct ContentView: View {
             }, label: {
                 PlayButtonView(workoutInProgress: coach.workoutInProgress)
             })
-            List {
-                ForEach(workout.exercises) { exercise in
-                    ExerciseRowView(coach: coach, exercise: exercise)
-                }
+            Spacer()
+            if coach.workoutInProgress {
+                Text("Set \(coach.currentSet) of \(workout.numberOfSets)")
+                    .font(.caption)
+            } else if workout.numberOfSets > 1 {
+                Text("\(workout.numberOfSets) sets")
+                    .font(.caption)
+            } else {
+                /*@START_MENU_TOKEN@*/EmptyView()/*@END_MENU_TOKEN@*/
             }
+            ExerciseListView(coach: coach, exercises: workout.exercises)
         }
     }
 }
@@ -57,26 +63,8 @@ struct PlayButtonView: View {
     }
 }
 
-struct ExerciseRowView: View {
-    @StateObject var coach: Coach
-    let exercise: Exercise
-    
-    var body: some View {
-        HStack {
-            if let current = coach.currentExercise, exercise.id == current.id {
-                Text(exercise.name)
-                    .bold()
-            } else {
-                Text(exercise.name)
-            }
-            Spacer()
-            Text("\(Int(exercise.duration))s")
-        }
-    }
-}
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        WorkoutView()
     }
 }

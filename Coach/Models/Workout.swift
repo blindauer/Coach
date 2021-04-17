@@ -22,7 +22,9 @@ struct Exercise: Identifiable {
 struct Workout {
     let name: String
     let exercises: [Exercise]
-    let restBetween: TimeInterval
+    let restBetweenExercises: TimeInterval
+    let numberOfSets: Int
+    let restBetweenSets: TimeInterval
 }
 
 extension Workout {
@@ -30,13 +32,15 @@ extension Workout {
         Workout(
             name: "Rotisserie Core",
             exercises: [
-                Exercise(name: "Superman", duration: 30.0),
-                Exercise(name: "Left Side Plank", duration: 30.0),
-                Exercise(name: "Crunches", duration: 30.0),
-                Exercise(name: "Right Side Plank", duration: 30.0),
+                Exercise(name: "Superman", duration: 40.0),
+                Exercise(name: "Left Side Plank", duration: 35.0),
+                Exercise(name: "Crunches", duration: 40.0),
+                Exercise(name: "Right Side Plank", duration: 35.0),
                 Exercise(name: "Front Plank", duration: 30.0)
             ],
-            restBetween: 10.0
+            restBetweenExercises: 10.0,
+            numberOfSets: 2,
+            restBetweenSets: 60.0
         )
     ]
 }
