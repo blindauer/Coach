@@ -5,7 +5,7 @@
 //  Created by Bradley Lindauer on 3/24/21.
 //
 
-import Foundation
+import UIKit
 
 protocol Coaching {
     func start(workout: Workout)
@@ -42,6 +42,8 @@ extension Coach: Coaching {
             self.currentExerciseTimeLeft = self.timeLeft
         }
         
+        UIApplication.shared.isIdleTimerDisabled = true
+        
         perform(workout)
     }
     
@@ -52,6 +54,7 @@ extension Coach: Coaching {
     func stopWorkout() {
         workout = nil
         workoutInProgress = false
+        UIApplication.shared.isIdleTimerDisabled = true
     }
     
     private func perform(_ workout: Workout) {
@@ -131,7 +134,9 @@ extension Coach {
             }
             if setNumber < workout.numberOfSets {
                 workoutSteps.append(.announce("Rest: \(Int(workout.restBetweenSets)) seconds."))
-                workoutSteps.append(.delay(workout.restBetweenSets - 5))
+                workoutSteps.append(.delay(workout.restBetweenSets - 8))
+                workoutSteps.append(.announce("Rest ending in 5 seconds."))
+                workoutSteps.append(.delay(3))
                 workoutSteps.append(contentsOf: countdown(from: 5))
             }
         }

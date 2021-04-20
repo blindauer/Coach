@@ -50,6 +50,7 @@
 		A20B26DF260C48F900E11543 /* CoachUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachUITests.swift; sourceTree = "<group>"; };
 		A20B26E1260C48F900E11543 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20B26F0260C491400E11543 /* Coach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coach.swift; sourceTree = "<group>"; };
+		A26FE4CF262EC7E200FC2B14 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		A2D24D69262A8FEF006E3130 /* ExerciseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseListView.swift; sourceTree = "<group>"; };
 		A2FCF6BF2612D17400CB3605 /* Announcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcer.swift; sourceTree = "<group>"; };
 		A2FCF6C72612D5EB00CB3605 /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
@@ -103,6 +104,7 @@
 		A20B26C1260C48F700E11543 /* Coach */ = {
 			isa = PBXGroup;
 			children = (
+				A26FE4CF262EC7E200FC2B14 /* TODO.md */,
 				A28058AA2615A2E000B4B033 /* Models */,
 				A28058AB2615A2F600B4B033 /* Views */,
 				A20B26F0260C491400E11543 /* Coach.swift */,

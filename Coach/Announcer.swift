@@ -19,9 +19,24 @@ class Announcer: NSObject {
     
     func speak(_ string: String) {
         let utterance = AVSpeechUtterance(string: string)
+        
+        // TODO slightly better, but still not awesome.
+        utterance.voice = AVSpeechSynthesisVoice(identifier: "com.apple.ttsbundle.siri_female_en-US_compact")
+        // utterance.voice = AVSpeechSynthesisVoice(identifier: "com.apple.ttsbundle.siri_male_en-US_compact")
+        
         let synthesizer = AVSpeechSynthesizer()
         synthesizer.delegate = self
         synthesizer.speak(utterance)
+    }
+    
+    private func printAllVoices() {
+        let allVoices =  AVSpeechSynthesisVoice.speechVoices()
+
+        var index = 0
+        for theVoice in allVoices {
+            print("Voice[\(index)] = \(theVoice)")
+            index += 1
+        }
     }
 }
 
