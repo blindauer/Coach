@@ -54,7 +54,7 @@ extension Coach: Coaching {
     func stopWorkout() {
         workout = nil
         workoutInProgress = false
-        UIApplication.shared.isIdleTimerDisabled = true
+        UIApplication.shared.isIdleTimerDisabled = false
     }
     
     private func perform(_ workout: Workout) {
@@ -62,7 +62,7 @@ extension Coach: Coaching {
         workoutInProgress = true
         currentSet = 1
 
-        let workoutSteps = steps(from: workout)
+        let workoutSteps = WorkoutCompiler().steps(from: workout)
         schedule(steps: workoutSteps)
     }
     
@@ -72,8 +72,8 @@ extension Coach: Coaching {
             return
         }
         
-        workoutSteps = Array(steps.dropFirst())
         schedule(step: currentStep)
+        workoutSteps = Array(steps.dropFirst())
     }
     
     private func schedule(step: WorkoutStep) {
@@ -103,73 +103,5 @@ extension Coach: Coaching {
             guard let remainingSteps = self.workoutSteps else { return }
             self.schedule(steps: remainingSteps)
         }
-    }
-}
-
-extension Coach {
-    private enum WorkoutStep {
-        case delay(TimeInterval)
-        case announce(String)
-        case setNumber(Int)
-        case start(Exercise)
-        case stopExercise
-    }
-    
-    private func steps(from workout: Workout) -> [WorkoutStep] {
-        var workoutSteps = [WorkoutStep]()
-        
-        workoutSteps.append(.announce(""))  // TODO figure out why this needs to be here.
-        workoutSteps.append(.announce("Workout: \(workout.name)."))
-        workoutSteps.append(.delay(5))
-        workoutSteps.append(.announce("\(workout.numberOfSets) sets."))
-        workoutSteps.append(.delay(2))
-                
-        for setNumber in 1...workout.numberOfSets {
-            workoutSteps.append(.setNumber(setNumber))
-            workoutSteps.append(.announce("Set number \(setNumber)."))
-            workoutSteps.append(.delay(2))
-            for exercise in workout.exercises {
-                let exerciseSteps = steps(from: exercise)
-                workoutSteps.append(contentsOf: exerciseSteps)
-            }
-            if setNumber < workout.numberOfSets {
-                workoutSteps.append(.announce("Rest: \(Int(workout.restBetweenSets)) seconds."))
-                workoutSteps.append(.delay(workout.restBetweenSets - 8))
-                workoutSteps.append(.announce("Rest ending in 5 seconds."))
-                workoutSteps.append(.delay(3))
-                workoutSteps.append(contentsOf: countdown(from: 5))
-            }
-        }
-        
-        workoutSteps.append(.announce("\(workout.name) complete."))
-        workoutSteps.append(.delay(3))
-        workoutSteps.append(.announce("Nice job!"))
-        
-        return workoutSteps
-    }
-    
-    private func steps(from exercise: Exercise) -> [WorkoutStep] {
-        var steps = [WorkoutStep]()
-        steps.append(.announce("\(exercise.name), \(Int(exercise.duration)) seconds, starting in 10 seconds."))
-        steps.append(.delay(10))
-        steps.append(contentsOf: countdown(from: 5))
-        steps.append(.announce("Go!"))
-        steps.append(.start(exercise))
-        steps.append(.delay(exercise.duration - 10))
-        steps.append(.announce("10 seconds left."))
-        steps.append(.delay(5))
-        steps.append(contentsOf: countdown(from: 5))
-        steps.append(.stopExercise)
-        return steps
-    }
-    
-    private func countdown(from: TimeInterval) -> [WorkoutStep] {
-        var steps = [WorkoutStep]()
-        for x in (1...5).reversed() {
-            steps.append(.announce("\(x)."))
-            steps.append(.delay(1))
-        }
-        
-        return steps
     }
 }
