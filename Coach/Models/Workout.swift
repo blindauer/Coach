@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Exercise: Identifiable {
+struct Exercise: Codable, Identifiable {
     let id: UUID
     let name: String
     let duration: TimeInterval
@@ -19,7 +19,7 @@ struct Exercise: Identifiable {
     }
 }
 
-struct Workout {
+struct Workout: Codable {
     let name: String
     let exercises: [Exercise]
     let restBetweenExercises: TimeInterval
@@ -32,15 +32,22 @@ extension Workout {
         Workout(
             name: "Rotisserie Core",
             exercises: [
-                Exercise(name: "Superman", duration: 40.0),
-                Exercise(name: "Left Side Plank", duration: 35.0),
-                Exercise(name: "Crunches", duration: 40.0),
-                Exercise(name: "Right Side Plank", duration: 35.0),
+                Exercise(name: "Superman", duration: 30.0),
+                Exercise(name: "Left Side Plank", duration: 30.0),
+                Exercise(name: "Crunches", duration: 30.0),
+                Exercise(name: "Right Side Plank", duration: 30.0),
                 Exercise(name: "Front Plank", duration: 30.0)
             ],
             restBetweenExercises: 10.0,
-            numberOfSets: 2,
+            numberOfSets: 3,
             restBetweenSets: 60.0
         )
     ]
 }
+
+struct WorkoutLogEntry: Codable {
+    let date: Date
+    let workout: Workout
+}
+
+typealias WorkoutLog = [WorkoutLogEntry]

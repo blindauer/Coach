@@ -40,7 +40,7 @@ class WorkoutCompiler {
         
         workoutSteps.append(.announce("\(workout.name) complete."))
         workoutSteps.append(.delay(3))
-        workoutSteps.append(.announce("Nice job!"))
+        workoutSteps.append(.announce(randomCompleteMessage()))
         
         return workoutSteps
     }
@@ -78,5 +78,14 @@ class WorkoutCompiler {
         steps.append(.delay(3))
         steps.append(contentsOf: countdown(from: 5))
         return steps
+    }
+    
+    private func randomCompleteMessage() -> String {
+        return [
+            "Nice job!",
+            "Bro, you are swole!",
+            "Are you totally ripped yet?",
+            "Next time, more sets, I.M.O."
+        ].randomElement() ?? ""
     }
 }
