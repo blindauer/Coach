@@ -1,26 +1,26 @@
 //
-//  WorkoutDataStore.swift
+//  WorkoutLogDataStore.swift
 //  Coach
 //
-//  Created by Bradley Lindauer on 4/27/21.
+//  Created by Bradley Lindauer on 5/4/21.
 //
 
 import Foundation
 
-protocol WorkoutStorable {
-    func store(_ workouts: [Workout])
-    func load() -> [Workout]
+protocol WorkoutLogStorable {
+    func store(_ entry: WorkoutLogEntry)
+    func load() -> WorkoutLog
 }
 
-class WorkoutDataStore: WorkoutStorable {
-    private var cachedWorkouts = [Workout]()
+class WorkoutLogDataStore: WorkoutLogStorable {
+    private var cachedWorkouts = WorkoutLog()
     
-    func store(_ workouts: [Workout]) {
-        cachedWorkouts = workouts
+    func store(_ entry: WorkoutLogEntry) {
+        cachedWorkouts.append(entry)
         try? saveToDisk()
     }
     
-    func load() -> [Workout] {
+    func load() -> WorkoutLog {
         return cachedWorkouts
     }
     
@@ -33,5 +33,5 @@ class WorkoutDataStore: WorkoutStorable {
             .write(to: fileURL)
     }
     
-    private let WorkoutsFileName = "Workouts.json"
+    private let WorkoutsFileName = "WorkoutLog.json"
 }

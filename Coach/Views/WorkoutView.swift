@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct WorkoutView: View {
+    @Binding var workout: Workout
     @StateObject private var coach = Coach()
-    private var workout = Workout.data[0]
     
     var body: some View {
         VStack {
@@ -65,6 +65,6 @@ struct PlayButtonView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        WorkoutView()
+        WorkoutView(workout: .constant(Workout.data[0]))
     }
 }

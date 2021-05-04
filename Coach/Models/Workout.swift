@@ -19,7 +19,8 @@ struct Exercise: Codable, Identifiable {
     }
 }
 
-struct Workout: Codable {
+struct Workout: Codable, Identifiable {
+    let id: UUID
     let name: String
     let exercises: [Exercise]
     let restBetweenExercises: TimeInterval
@@ -30,6 +31,7 @@ struct Workout: Codable {
 extension Workout {
     static let data: [Workout] = [
         Workout(
+            id: UUID(),
             name: "Rotisserie Core",
             exercises: [
                 Exercise(name: "Superman", duration: 30.0),
@@ -44,11 +46,3 @@ extension Workout {
         )
     ]
 }
-
-struct WorkoutLogEntry: Codable {
-    let date: Date
-    let duration: TimeInterval
-    let workout: Workout
-}
-
-typealias WorkoutLog = [WorkoutLogEntry]
