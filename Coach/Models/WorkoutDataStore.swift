@@ -13,13 +13,23 @@ protocol WorkoutStorable {
 }
 
 class WorkoutDataStore: WorkoutStorable {
-    private var allWorkouts = WorkoutLog()
+    private var cachedWorkouts = WorkoutLog()
     
     func store(_ entry: WorkoutLogEntry) {
-        allWorkouts.append(entry)
+        cachedWorkouts.append(entry)
+        try? saveToDisk()
     }
     
     func load() -> WorkoutLog {
-        return allWorkouts
+        return cachedWorkouts
+    }
+    
+    private func saveToDisk() throws {
+        let fileURL = try FileManager.default
+            .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            .appendingPathComponent("workouts.json")
+
+        try JSONSerialization.data(withJSONObject: cachedWorkouts)
+            .write(to: fileURL)
     }
 }

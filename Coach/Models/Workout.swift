@@ -47,6 +47,7 @@ extension Workout {
 
 struct WorkoutLogEntry: Codable {
     let date: Date
+    let duration: TimeInterval
     let workout: Workout
 }
 
