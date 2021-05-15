@@ -15,6 +15,11 @@ enum WorkoutStep {
     case stopExercise
 }
 
+struct ScheduledStep {
+    let time: TimeInterval
+    let step: Workout
+}
+
 /// Compile a workout to a list of steps.
 class WorkoutCompiler {
     func steps(from workout: Workout) -> [WorkoutStep] {
@@ -75,8 +80,7 @@ class WorkoutCompiler {
         steps.append(.announce("Rest: \(Int(time)) seconds."))
         steps.append(.delay(time - 8))
         steps.append(.announce("Rest ending in 5 seconds."))
-        steps.append(.delay(3))
-        steps.append(contentsOf: countdown(from: 5))
+        steps.append(.delay(5))
         return steps
     }
     

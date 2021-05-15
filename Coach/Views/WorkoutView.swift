@@ -16,17 +16,15 @@ struct WorkoutView: View {
             Text(workout.name)
                 .font(.headline)
             Spacer()
-            Button(action: {
-                if coach.workoutInProgress {
-                    coach.stopWorkout()
-                } else {
-                    coach.start(workout: workout)
-                }
-            }, label: {
-                PlayButtonView(workoutInProgress: coach.workoutInProgress)
-            })
+            WorkoutControlsView(
+                workoutState: coach.workoutState,
+                startAction: { coach.start(workout: workout) },
+                pauseAction: { coach.pauseWorkout() },
+                resumeAction: { coach.resumeWorkout() },
+                stopAction: { coach.stopWorkout() }
+            )
             Spacer()
-            if coach.workoutInProgress {
+            if coach.workoutState == .active || coach.workoutState == .paused {
                 Text("Set \(coach.currentSet) of \(workout.numberOfSets)")
                     .font(.caption)
             } else if workout.numberOfSets > 1 {
@@ -40,19 +38,51 @@ struct WorkoutView: View {
     }
 }
 
-struct PlayButtonView: View {
-    let workoutInProgress: Bool
+struct WorkoutControlsView: View {
+    let workoutState: Coach.WorkoutState
+    let startAction: () -> Void
+    let pauseAction: () -> Void
+    let resumeAction: () -> Void
+    let stopAction: () -> Void
     
     var body: some View {
-        let buttonImage = VStack {
-            if workoutInProgress {
-                Image(systemName:"pause.fill")
-            } else {
-                Image(systemName:"play.fill")
+        switch workoutState {
+        case .idle:
+            Button(action: {
+                startAction()
+            }, label: {
+                Image(systemName: "play.fill")
+            })
+            .buttonStyle(WorkoutControlButtonStyle())
+        case .active:
+            Button(action: {
+                pauseAction()
+            }, label: {
+                Image(systemName: "pause.fill")
+            })
+            .buttonStyle(WorkoutControlButtonStyle())
+        case .paused:
+            HStack {
+                Button(action: {
+                    stopAction()
+                }, label: {
+                    Image(systemName: "xmark")
+                })
+                .buttonStyle(WorkoutControlButtonStyle())
+                Button(action: {
+                    resumeAction()
+                }, label: {
+                    Image(systemName: "arrow.clockwise")
+                })
+                .buttonStyle(WorkoutControlButtonStyle())
             }
         }
-        
-        buttonImage
+    }
+}
+
+struct WorkoutControlButtonStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
             .font(.title)
             .foregroundColor(.blue)
             .padding()
@@ -63,8 +93,34 @@ struct PlayButtonView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct WorkoutView_Previews: PreviewProvider {
     static var previews: some View {
         WorkoutView(workout: .constant(Workout.data[0]))
+    }
+}
+
+struct WorkoutControlsView_Previews: PreviewProvider {
+    static var previews: some View {
+        WorkoutControlsView(
+            workoutState: .idle,
+            startAction: {},
+            pauseAction: {},
+            resumeAction: {},
+            stopAction: {}
+        )
+        WorkoutControlsView(
+            workoutState: .active,
+            startAction: {},
+            pauseAction: {},
+            resumeAction: {},
+            stopAction: {}
+        )
+        WorkoutControlsView(
+            workoutState: .paused,
+            startAction: {},
+            pauseAction: {},
+            resumeAction: {},
+            stopAction: {}
+        )
     }
 }

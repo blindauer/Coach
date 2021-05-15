@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Exercise: Codable, Identifiable {
+struct Exercise: Codable, Identifiable, Equatable {
     let id: UUID
     let name: String
     let duration: TimeInterval

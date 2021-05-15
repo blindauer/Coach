@@ -14,4 +14,8 @@ class Announcer {
         let utterance = AVSpeechUtterance(string: string)
         synthesizer.speak(utterance)
     }
+    
+    func stopSpeaking() {
+        synthesizer.stopSpeaking(at: .immediate)
+    }
 }

@@ -10,6 +10,7 @@ import UIKit
 protocol Coaching {
     func start(workout: Workout)
     func pauseWorkout()
+    func resumeWorkout()
     func stopWorkout()
 }
 
@@ -19,8 +20,15 @@ class Coach: ObservableObject {
     private var workoutSteps: [WorkoutStep]?
     private var exerciseStart: Date?
     private var timer: Timer?
+    private var workItem: DispatchWorkItem?
     
-    @Published var workoutInProgress = false
+    enum WorkoutState {
+        case idle
+        case active
+        case paused
+    }
+    
+    @Published var workoutState = WorkoutState.idle
     @Published var currentExercise: Exercise?
     @Published var currentExerciseTimeLeft: TimeInterval?
     @Published var currentSet: Int = 0
@@ -48,18 +56,28 @@ extension Coach: Coaching {
     }
     
     func pauseWorkout() {
-        // TODO
+        workoutState = .paused
+        workItem?.cancel()
+        workItem = nil
+        announcer.stopSpeaking()
+    }
+    
+    func resumeWorkout() {
+        if let steps = workoutSteps {
+            workoutState = .active
+            schedule(steps: steps)
+        }
     }
     
     func stopWorkout() {
         workout = nil
-        workoutInProgress = false
+        workoutState = .idle
         UIApplication.shared.isIdleTimerDisabled = false
     }
     
     private func perform(_ workout: Workout) {
         self.workout = workout
-        workoutInProgress = true
+        workoutState = .active
         currentSet = 1
 
         let workoutSteps = WorkoutCompiler().steps(from: workout)
@@ -98,10 +116,14 @@ extension Coach: Coaching {
             nextStepDelay = 0
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + nextStepDelay) { [weak self] in
+        workItem = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
             guard let remainingSteps = self.workoutSteps else { return }
             self.schedule(steps: remainingSteps)
+        }
+        
+        if let item = workItem {
+            DispatchQueue.main.asyncAfter(deadline: .now() + nextStepDelay, execute: item)
         }
     }
 }

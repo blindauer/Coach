@@ -25,24 +25,34 @@ struct ExerciseRowView: View {
     let exercise: Exercise
     
     var body: some View {
-        HStack {
-            if let current = coach.currentExercise, exercise.id == current.id {
-                Text(exercise.name)
-                    .bold()
-            } else {
-                Text(exercise.name)
-            }
-            Spacer()
-            if let current = coach.currentExercise,
-               exercise.id == current.id,
-               let timeLeft = coach.currentExerciseTimeLeft
-            {
-                Text("\(Int(timeLeft))s")
-                    .bold()
-            } else {
-                Text("\(Int(exercise.duration))s")
+        ZStack {
+            // TODO - for testing for "current" exercise.
+//            Capsule()
+//                .strokeBorder(Color.blue, lineWidth: 2)
+//                .background(Capsule().fill(Color.white))
+            HStack {
+                if isCurrent(exercise: exercise) {
+                    Text(exercise.name)
+                        .bold()
+                } else {
+                    Text(exercise.name)
+                }
+                Spacer()
+                if isCurrent(exercise: exercise),
+                   let timeLeft = coach.currentExerciseTimeLeft
+                {
+                    Text("\(Int(timeLeft))s")
+                        .bold()
+                } else {
+                    Text("\(Int(exercise.duration))s")
+                }
             }
         }
+    }
+    
+    private func isCurrent(exercise: Exercise) -> Bool {
+        guard let currentExercise = coach.currentExercise else { return false }
+        return exercise == currentExercise
     }
 }
 
