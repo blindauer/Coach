@@ -20,6 +20,7 @@ class Coach: ObservableObject {
     private var currentStepIndex: Int = 0
     private var workoutStart: Date?
     private var exerciseStart: Date?
+    private var pauseTime: Date?
     private var timer: Timer?
     
     enum WorkoutState {
@@ -59,6 +60,7 @@ extension Coach: Coaching {
     func pauseWorkout() {
         stopTimer()
         workoutState = .paused
+        pauseTime = Date()
         announcer.stopSpeaking()
         
         UIApplication.shared.isIdleTimerDisabled = false
@@ -68,6 +70,11 @@ extension Coach: Coaching {
         guard workoutSteps != nil else { return }
 
         workoutState = .active
+        if let pauseTime = pauseTime {
+            let timePaused = Date().timeIntervalSince(pauseTime)
+            workoutStart = workoutStart?.addingTimeInterval(timePaused)
+            exerciseStart = exerciseStart?.addingTimeInterval(timePaused)
+        }
         startTimer()
         
         UIApplication.shared.isIdleTimerDisabled = true
