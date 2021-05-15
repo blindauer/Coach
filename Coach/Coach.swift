@@ -16,11 +16,11 @@ protocol Coaching {
 
 class Coach: ObservableObject {
     private let announcer = Announcer()
-    private var workout: Workout?
     private var workoutSteps: [WorkoutStep]?
+    private var currentStepIndex: Int = 0
+    private var workoutStart: Date?
     private var exerciseStart: Date?
     private var timer: Timer?
-    private var workItem: DispatchWorkItem?
     
     enum WorkoutState {
         case idle
@@ -45,85 +45,87 @@ class Coach: ObservableObject {
 
 extension Coach: Coaching {
     func start(workout: Workout) {
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] timer in
-            guard let self = self else { return }
-            self.currentExerciseTimeLeft = self.timeLeft
-        }
+        workoutSteps = WorkoutCompiler().steps(from: workout)
+        
+        workoutState = .active
+        workoutStart = Date()
+        currentStepIndex = 0
+        
+        startTimer()
         
         UIApplication.shared.isIdleTimerDisabled = true
-        
-        perform(workout)
     }
     
     func pauseWorkout() {
+        stopTimer()
         workoutState = .paused
-        workItem?.cancel()
-        workItem = nil
         announcer.stopSpeaking()
-    }
-    
-    func resumeWorkout() {
-        if let steps = workoutSteps {
-            workoutState = .active
-            schedule(steps: steps)
-        }
-    }
-    
-    func stopWorkout() {
-        workout = nil
-        workoutState = .idle
+        
         UIApplication.shared.isIdleTimerDisabled = false
     }
     
-    private func perform(_ workout: Workout) {
-        self.workout = workout
-        workoutState = .active
-        currentSet = 1
+    func resumeWorkout() {
+        guard workoutSteps != nil else { return }
 
-        let workoutSteps = WorkoutCompiler().steps(from: workout)
-        schedule(steps: workoutSteps)
+        workoutState = .active
+        startTimer()
+        
+        UIApplication.shared.isIdleTimerDisabled = true
     }
     
-    private func schedule(steps: [WorkoutStep]) {
-        guard let currentStep = steps.first else {
-            stopWorkout()
-            return
+    func stopWorkout() {
+        stopTimer()
+        workoutState = .idle
+        workoutSteps = nil
+        
+        UIApplication.shared.isIdleTimerDisabled = false
+    }
+    
+    private func startTimer() {
+        timer = Timer.scheduledTimer(
+            timeInterval: 0.1,
+            target: self,
+            selector: #selector(workoutTimer),
+            userInfo: nil,
+            repeats: true
+        )
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    @objc private func workoutTimer() {
+        guard
+            let steps = workoutSteps,
+            let startTime = workoutStart,
+            currentStepIndex < steps.count
+        else { return }
+        
+        let currentStep = steps[currentStepIndex]
+        if Date().timeIntervalSince(startTime) > currentStep.time {
+            execute(step: currentStep)
+            currentStepIndex += 1
         }
-        
-        schedule(step: currentStep)
-        workoutSteps = Array(steps.dropFirst())
+
+        if let timeLeft = timeLeft {
+            currentExerciseTimeLeft = timeLeft + 1
+        }
     }
     
-    private func schedule(step: WorkoutStep) {
-        let nextStepDelay: TimeInterval
-        
-        switch step {
-        case .delay(let delay):
-            nextStepDelay = delay
+    private func execute(step: WorkoutStep) {
+        switch step.kind {
         case .announce(let announcement):
             announcer.speak(announcement)
-            nextStepDelay = 0
         case .setNumber(let setNumber):
             currentSet = setNumber
-            nextStepDelay = 0
         case .start(let exercise):
             exerciseStart = Date()
             currentExercise = exercise
-            nextStepDelay = 0
         case .stopExercise:
             currentExercise = nil
             exerciseStart = nil
-            nextStepDelay = 0
-        }
-        
-        workItem = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
-            guard let remainingSteps = self.workoutSteps else { return }
-            self.schedule(steps: remainingSteps)
-        }
-        
-        if let item = workItem {
-            DispatchQueue.main.asyncAfter(deadline: .now() + nextStepDelay, execute: item)
         }
     }
 }

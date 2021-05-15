@@ -7,81 +7,87 @@
 
 import Foundation
 
-enum WorkoutStep {
-    case delay(TimeInterval)
-    case announce(String)
-    case setNumber(Int)
-    case start(Exercise)
-    case stopExercise
-}
-
-struct ScheduledStep {
+struct WorkoutStep {
+    enum Kind {
+        case announce(String)
+        case setNumber(Int)
+        case start(Exercise)
+        case stopExercise
+    }
+    let kind: Kind
     let time: TimeInterval
-    let step: Workout
+    
+    init(_ kind: Kind, time: TimeInterval = 0) {
+        self.kind = kind
+        self.time = time
+    }
 }
 
 /// Compile a workout to a list of steps.
 class WorkoutCompiler {
+    var currentTimeDelta: TimeInterval = 0
+    var workoutSteps = [WorkoutStep]()
+    
     func steps(from workout: Workout) -> [WorkoutStep] {
-        var workoutSteps = [WorkoutStep]()
-        
-        workoutSteps.append(.announce(""))  // TODO figure out why this needs to be here.
-        workoutSteps.append(.announce("Workout: \(workout.name)."))
-        workoutSteps.append(.delay(5))
-        workoutSteps.append(.announce("\(workout.numberOfSets) sets."))
-        workoutSteps.append(.delay(2))
+        append(step: .announce("")) // TODO figure out why this needs to be here.
+        append(step: .announce("Workout: \(workout.name)."))
+        append(delay: 5)
+        append(step: .announce("\(workout.numberOfSets) sets."))
+        append(delay: 2)
                 
         for setNumber in 1...workout.numberOfSets {
-            workoutSteps.append(.setNumber(setNumber))
-            workoutSteps.append(.announce("Set number \(setNumber)."))
-            workoutSteps.append(.delay(2))
+            append(step: .setNumber(setNumber))
+            append(step: .announce("Set number \(setNumber)."))
+            append(delay: 2)
             for exercise in workout.exercises {
-                workoutSteps.append(contentsOf: steps(from: exercise))
+                append(exercise: exercise)
             }
             if setNumber < workout.numberOfSets {
-                workoutSteps.append(contentsOf: rest(time: workout.restBetweenSets))
+                append(restTime: workout.restBetweenSets)
             }
         }
         
-        workoutSteps.append(.announce("\(workout.name) complete."))
-        workoutSteps.append(.delay(3))
-        workoutSteps.append(.announce(randomCompleteMessage()))
+        append(step: .announce("\(workout.name) complete."))
+        append(delay: 3)
+        append(step: .announce(randomCompleteMessage()))
         
         return workoutSteps
     }
     
-    private func steps(from exercise: Exercise) -> [WorkoutStep] {
-        var steps = [WorkoutStep]()
-        steps.append(.announce("\(exercise.name), \(Int(exercise.duration)) seconds, starting in 10 seconds."))
-        steps.append(.delay(10))
-        steps.append(contentsOf: countdown(from: 5))
-        steps.append(.announce("Go!"))
-        steps.append(.start(exercise))
-        steps.append(.delay(exercise.duration - 10))
-        steps.append(.announce("10 seconds left."))
-        steps.append(.delay(5))
-        steps.append(contentsOf: countdown(from: 5))
-        steps.append(.stopExercise)
-        return steps
+    private func append(step: WorkoutStep.Kind) {
+        let step = WorkoutStep(step, time: currentTimeDelta)
+        workoutSteps.append(step)
+    }
+
+    private func append(delay: TimeInterval) {
+        currentTimeDelta += delay
     }
     
-    private func countdown(from seconds: TimeInterval) -> [WorkoutStep] {
-        var steps = [WorkoutStep]()
+    private func append(exercise: Exercise) {
+        append(step: .announce("\(exercise.name), \(Int(exercise.duration)) seconds, starting in 10 seconds."))
+        append(delay: 10)
+        append(countdownFrom: 5)
+        append(step: .announce("Go!"))
+        append(step: .start(exercise))
+        append(delay: exercise.duration - 10)
+        append(step: .announce("10 seconds left."))
+        append(delay: 5)
+        append(countdownFrom: 5)
+        append(step: .stopExercise)
+    }
+    
+    private func append(countdownFrom seconds: TimeInterval) {
         for x in (1...Int(seconds)).reversed() {
-            steps.append(.announce("\(x)."))
-            steps.append(.delay(1))
+            append(step: .announce("\(x)."))
+            append(delay: 1)
         }
-        
-        return steps
     }
     
-    private func rest(time: TimeInterval) -> [WorkoutStep] {
-        var steps = [WorkoutStep]()
-        steps.append(.announce("Rest: \(Int(time)) seconds."))
-        steps.append(.delay(time - 8))
-        steps.append(.announce("Rest ending in 5 seconds."))
-        steps.append(.delay(5))
-        return steps
+    private func append(restTime: TimeInterval) {
+        append(step: .announce("Rest: \(Int(restTime)) seconds."))
+        append(delay: restTime - 8)
+        append(step: .announce("Rest ending in 5 seconds."))
+        append(delay: 5)
     }
     
     private func randomCompleteMessage() -> String {
