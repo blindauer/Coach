@@ -70,10 +70,11 @@ extension Coach: Coaching {
         guard workoutSteps != nil else { return }
 
         workoutState = .active
-        if let pauseTime = pauseTime {
-            let timePaused = Date().timeIntervalSince(pauseTime)
+        if let pausedTime = pauseTime {
+            let timePaused = Date().timeIntervalSince(pausedTime)
             workoutStart = workoutStart?.addingTimeInterval(timePaused)
             exerciseStart = exerciseStart?.addingTimeInterval(timePaused)
+            pauseTime = nil
         }
         startTimer()
         
@@ -83,6 +84,7 @@ extension Coach: Coaching {
     func stopWorkout() {
         stopTimer()
         workoutState = .idle
+        workoutStart = nil
         workoutSteps = nil
         
         UIApplication.shared.isIdleTimerDisabled = false

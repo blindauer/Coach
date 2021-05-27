@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A2098AB5265F65DE000FC07D /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2098AB4265F65DE000FC07D /* EditView.swift */; };
 		A20B26C3260C48F700E11543 /* CoachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B26C2260C48F700E11543 /* CoachApp.swift */; };
 		A20B26C5260C48F700E11543 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B26C4260C48F700E11543 /* WorkoutView.swift */; };
 		A20B26C7260C48F800E11543 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20B26C6260C48F800E11543 /* Assets.xcassets */; };
@@ -19,7 +20,6 @@
 		A2CDFE622641347D007A7DE1 /* WorkoutLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CDFE612641347D007A7DE1 /* WorkoutLog.swift */; };
 		A2CDFE64264134D0007A7DE1 /* WorkoutLogDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CDFE63264134D0007A7DE1 /* WorkoutLogDataStore.swift */; };
 		A2CDFE662641367C007A7DE1 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CDFE652641367C007A7DE1 /* CoachView.swift */; };
-		A2D24D6A262A8FEF006E3130 /* ExerciseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D24D69262A8FEF006E3130 /* ExerciseListView.swift */; };
 		A2FCF6C02612D17400CB3605 /* Announcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FCF6BF2612D17400CB3605 /* Announcer.swift */; };
 		A2FCF6C82612D5EB00CB3605 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FCF6C72612D5EB00CB3605 /* Workout.swift */; };
 /* End PBXBuildFile section */
@@ -42,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A2098AB4265F65DE000FC07D /* EditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
 		A20B26BF260C48F700E11543 /* Coach.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coach.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A20B26C2260C48F700E11543 /* CoachApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachApp.swift; sourceTree = "<group>"; };
 		A20B26C4260C48F700E11543 /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
@@ -61,7 +62,6 @@
 		A2CDFE612641347D007A7DE1 /* WorkoutLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutLog.swift; sourceTree = "<group>"; };
 		A2CDFE63264134D0007A7DE1 /* WorkoutLogDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutLogDataStore.swift; sourceTree = "<group>"; };
 		A2CDFE652641367C007A7DE1 /* CoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachView.swift; sourceTree = "<group>"; };
-		A2D24D69262A8FEF006E3130 /* ExerciseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseListView.swift; sourceTree = "<group>"; };
 		A2FCF6BF2612D17400CB3605 /* Announcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcer.swift; sourceTree = "<group>"; };
 		A2FCF6C72612D5EB00CB3605 /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -170,7 +170,7 @@
 			children = (
 				A2CDFE652641367C007A7DE1 /* CoachView.swift */,
 				A20B26C4260C48F700E11543 /* WorkoutView.swift */,
-				A2D24D69262A8FEF006E3130 /* ExerciseListView.swift */,
+				A2098AB4265F65DE000FC07D /* EditView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -306,6 +306,7 @@
 			files = (
 				A212602B2633FEDA00257CE6 /* WorkoutCompiler.swift in Sources */,
 				A20B26C5260C48F700E11543 /* WorkoutView.swift in Sources */,
+				A2098AB5265F65DE000FC07D /* EditView.swift in Sources */,
 				A2FCF6C02612D17400CB3605 /* Announcer.swift in Sources */,
 				A255435F2637EFFF00314962 /* WorkoutDataStore.swift in Sources */,
 				A2CDFE662641367C007A7DE1 /* CoachView.swift in Sources */,
@@ -313,7 +314,6 @@
 				A20B26F1260C491400E11543 /* Coach.swift in Sources */,
 				A2CDFE622641347D007A7DE1 /* WorkoutLog.swift in Sources */,
 				A2FCF6C82612D5EB00CB3605 /* Workout.swift in Sources */,
-				A2D24D6A262A8FEF006E3130 /* ExerciseListView.swift in Sources */,
 				A20B26C3260C48F700E11543 /* CoachApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

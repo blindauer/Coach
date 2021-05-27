@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Exercise: Codable, Identifiable, Equatable {
+struct Exercise: Codable, Identifiable, Equatable, Hashable {
     let id: UUID
     let name: String
     let duration: TimeInterval
@@ -26,6 +26,23 @@ struct Workout: Codable, Identifiable {
     let restBetweenExercises: TimeInterval
     let numberOfSets: Int
     let restBetweenSets: TimeInterval
+}
+
+extension Workout {
+    struct Data {
+        var name: String = ""
+        var exercises: [Exercise] = []
+        var restBetweenExercises: Double = 10
+        var numberOfSets: Double = 3
+        var restBetweenSets: Double = 60
+    }
+    
+    var data: Data {
+        return Data(
+            name: name, exercises: exercises, restBetweenExercises: restBetweenSets,
+            numberOfSets: Double(numberOfSets), restBetweenSets: restBetweenSets
+        )
+    }
 }
 
 extension Workout {

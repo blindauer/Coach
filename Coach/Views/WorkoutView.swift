@@ -10,11 +10,36 @@ import SwiftUI
 struct WorkoutView: View {
     @Binding var workout: Workout
     @StateObject private var coach = Coach()
+    @State private var isPresented = false
+    @State private var newWorkoutData = Workout.Data()
     
     var body: some View {
         VStack {
-            Text(workout.name)
-                .font(.headline)
+            List {
+                Section(header: sectionHeader) {
+                    ForEach(workout.exercises) { exercise in
+                        ExerciseRowView(coach: coach, exercise: exercise)
+                    }
+                }
+            }
+            .listStyle(InsetGroupedListStyle())
+            .navigationBarItems(trailing: Button("Edit") {
+                newWorkoutData = workout.data
+                isPresented = true
+            })
+            .navigationTitle(workout.name)
+            .fullScreenCover(isPresented: $isPresented) {
+                NavigationView {
+                    EditView(workout: $newWorkoutData)
+                        .navigationTitle(workout.name)
+                        .navigationBarItems(leading: Button("Cancel") {
+                            isPresented = false
+                        }, trailing: Button("Done") {
+                            isPresented = false
+                            // TODO scrum.update(from: data)
+                        })
+                }
+            }
             Spacer()
             WorkoutControlsView(
                 workoutState: coach.workoutState,
@@ -23,17 +48,14 @@ struct WorkoutView: View {
                 resumeAction: { coach.resumeWorkout() },
                 stopAction: { coach.stopWorkout() }
             )
-            Spacer()
-            if coach.workoutState == .active || coach.workoutState == .paused {
-                Text("Set \(coach.currentSet) of \(workout.numberOfSets)")
-                    .font(.caption)
-            } else if workout.numberOfSets > 1 {
-                Text("\(workout.numberOfSets) sets")
-                    .font(.caption)
-            } else {
-                /*@START_MENU_TOKEN@*/EmptyView()/*@END_MENU_TOKEN@*/
-            }
-            ExerciseListView(coach: coach, exercises: workout.exercises)
+        }
+    }
+    
+    var sectionHeader: some View {
+        if coach.workoutState == .active || coach.workoutState == .paused {
+            return Text("Set \(coach.currentSet) of \(workout.numberOfSets)")
+        } else {
+            return Text("\(workout.numberOfSets) sets")
         }
     }
 }
@@ -90,6 +112,42 @@ struct WorkoutControlButtonStyle: ButtonStyle {
                 RoundedRectangle(cornerRadius: 30)
                     .stroke(Color.blue, lineWidth: 5)
             )
+    }
+}
+
+struct ExerciseRowView: View {
+    @StateObject var coach: Coach
+    let exercise: Exercise
+    
+    var body: some View {
+        ZStack {
+            // TODO - for testing for "current" exercise.
+//            Capsule()
+//                .strokeBorder(Color.blue, lineWidth: 2)
+//                .background(Capsule().fill(Color.white))
+            HStack {
+                if isCurrent(exercise: exercise) {
+                    Text(exercise.name)
+                        .bold()
+                } else {
+                    Text(exercise.name)
+                }
+                Spacer()
+                if isCurrent(exercise: exercise),
+                   let timeLeft = coach.currentExerciseTimeLeft
+                {
+                    Text("\(Int(timeLeft))s")
+                        .bold()
+                } else {
+                    Text("\(Int(exercise.duration))s")
+                }
+            }
+        }
+    }
+    
+    private func isCurrent(exercise: Exercise) -> Bool {
+        guard let currentExercise = coach.currentExercise else { return false }
+        return exercise == currentExercise
     }
 }
 
