@@ -35,8 +35,8 @@ struct WorkoutView: View {
                         .navigationBarItems(leading: Button("Cancel") {
                             isPresented = false
                         }, trailing: Button("Done") {
+                            // TODO save workout
                             isPresented = false
-                            // TODO scrum.update(from: data)
                         })
                 }
             }

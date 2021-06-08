@@ -9,8 +9,9 @@ import SwiftUI
 
 struct EditView: View {
     @Binding var workout: Workout.Data
-    @State private var newExercise = ""
     @State private var newExerciseDuration = 30
+    @State private var editMode: EditMode = .active
+    @State private var exerciseName = ""
     
     var body: some View {
         List {
@@ -36,11 +37,11 @@ struct EditView: View {
                 }
             }
             Section(header: exercisesListHeader) {
-                ForEach(workout.exercises, id: \.self) { exercise in
+                ForEach(0..<workout.exercises.count) { index in
                     HStack {
-                        Text(exercise.name)
+                        TextField("Name", text: $workout.exercises[index].name)
                         Spacer()
-                        Text("\(Int(exercise.duration))s")
+                        Text("\(Int(workout.exercises[index].duration))s")
                     }
                 }
                 .onDelete { indices in
@@ -49,44 +50,25 @@ struct EditView: View {
                 .onMove(perform: { indices, newOffset in
                     workout.exercises.move(fromOffsets: indices, toOffset: newOffset)
                 })
-//                VStack {
-//                    HStack {
-//                        TextField("New Exercise", text: $newExercise)
-//                        Button(action: {
-//                            withAnimation {
-//                                // TODO workout.exercises.append(newExercise)
-//                                newExercise = ""
-//                            }
-//                        }) {
-//                            Image(systemName: "plus.circle.fill")
-//                                .accessibilityLabel(Text("Add exercise"))
-//                        }
-//                        .disabled(newExercise.isEmpty || newExerciseDuration == 0)
-//                    }
-//                    TextField("Duration", value: $newExerciseDuration, formatter: NumberFormatter())
-//                        .keyboardType(UIKeyboardType.decimalPad)
-//                }
             }
         }
         .listStyle(InsetGroupedListStyle())
+        .environment(\.editMode, $editMode)
     }
     
     var exercisesListHeader: some View {
         HStack {
             Text("Exercises")
             Spacer()
-            EditButton()
-//            Spacer()
-//            Button(action: {
-//                withAnimation {
-//                    // TODO workout.exercises.append(newExercise)
-//                    newExercise = ""
-//                }
-//            }) {
-//                Image(systemName: "plus.circle.fill")
-//                    .accessibilityLabel(Text("Add exercise"))
-//            }
-            //.disabled(newExercise.isEmpty || newExerciseDuration == 0)
+            Button(action: {
+                withAnimation {
+                    let newExercise = Exercise.Data(name: "New Exercise", duration: 30)
+                    workout.exercises.append(newExercise)
+                }
+            }) {
+                Image(systemName: "plus.circle.fill")
+                    .accessibilityLabel(Text("Add exercise"))
+            }
         }
     }
 }

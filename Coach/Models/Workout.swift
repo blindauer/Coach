@@ -19,6 +19,17 @@ struct Exercise: Codable, Identifiable, Equatable, Hashable {
     }
 }
 
+extension Exercise {
+    struct Data {
+        var name: String = ""
+        var duration: Double = 30
+    }
+    
+    var data: Data {
+        return Data(name: name, duration: duration)
+    }
+}
+
 struct Workout: Codable, Identifiable {
     let id: UUID
     let name: String
@@ -31,7 +42,7 @@ struct Workout: Codable, Identifiable {
 extension Workout {
     struct Data {
         var name: String = ""
-        var exercises: [Exercise] = []
+        var exercises: [Exercise.Data] = []
         var restBetweenExercises: Double = 10
         var numberOfSets: Double = 3
         var restBetweenSets: Double = 60
@@ -39,7 +50,8 @@ extension Workout {
     
     var data: Data {
         return Data(
-            name: name, exercises: exercises, restBetweenExercises: restBetweenSets,
+            name: name, exercises: exercises.map { Exercise.Data(name: $0.name, duration: $0.duration) },
+            restBetweenExercises: restBetweenSets,
             numberOfSets: Double(numberOfSets), restBetweenSets: restBetweenSets
         )
     }
