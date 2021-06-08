@@ -110,7 +110,10 @@ extension Coach: Coaching {
             let steps = workoutSteps,
             let startTime = workoutStart,
             currentStepIndex < steps.count
-        else { return }
+        else {
+            stopWorkout()
+            return
+        }
         
         let currentStep = steps[currentStepIndex]
         if Date().timeIntervalSince(startTime) > currentStep.time {
