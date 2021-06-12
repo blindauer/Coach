@@ -37,11 +37,11 @@ struct EditView: View {
                 }
             }
             Section(header: exercisesListHeader) {
-                ForEach(0..<workout.exercises.count) { index in
+                ForEach(Array(zip(workout.exercises.indices, workout.exercises)), id: \.0) { index, exercise in
                     HStack {
                         TextField("Name", text: $workout.exercises[index].name)
                         Spacer()
-                        Text("\(Int(workout.exercises[index].duration))s")
+                        Text("\(Int(exercise.duration))s")
                     }
                 }
                 .onDelete { indices in

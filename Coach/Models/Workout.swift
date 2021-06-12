@@ -20,7 +20,8 @@ struct Exercise: Codable, Identifiable, Equatable, Hashable {
 }
 
 extension Exercise {
-    struct Data {
+    struct Data: Hashable {
+        let id: UUID = UUID()
         var name: String = ""
         var duration: Double = 30
     }
