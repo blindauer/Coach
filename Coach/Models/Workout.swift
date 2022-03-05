@@ -64,11 +64,11 @@ extension Workout {
             id: UUID(),
             name: "Rotisserie Core",
             exercises: [
-                Exercise(name: "Superman", duration: 35),
-                Exercise(name: "Left Side Plank", duration: 35),
-                Exercise(name: "Crunches", duration: 35),
-                Exercise(name: "Right Side Plank", duration: 35),
-                Exercise(name: "Front Plank", duration: 35)
+                Exercise(name: "Superman", duration: 40),
+                Exercise(name: "Left Side Plank", duration: 40),
+                Exercise(name: "Leg Lifts", duration: 60),
+                Exercise(name: "Right Side Plank", duration: 40),
+                Exercise(name: "Front Plank", duration: 40)
             ],
             restBetweenExercises: 10.0,
             numberOfSets: 3,
