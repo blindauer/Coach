@@ -45,6 +45,9 @@ class WorkoutCompiler {
             }
             for exercise in workout.exercises {
                 append(exercise: exercise)
+                if exercise != workout.exercises.last{
+                    append(restTime: workout.restBetweenExercises)
+                }
             }
             if setNumber < workout.numberOfSets {
                 append(restTime: workout.restBetweenSets)
@@ -68,14 +71,20 @@ class WorkoutCompiler {
     }
     
     private func append(exercise: Exercise) {
-        append(step: .announce("\(exercise.name), \(Int(exercise.duration)) seconds, starting in 10."))
-        append(delay: 10)
+        let has10SecondWarning = exercise.duration > 30
+        
+        append(step: .announce("\(exercise.name), \(Int(exercise.duration)) seconds."))
+        append(delay: 4)
         append(countdownFrom: 5)
         append(step: .announce("Go!"))
         append(step: .start(exercise))
-        append(delay: exercise.duration - 10)
-        append(step: .announce("10 seconds left."))
-        append(delay: 5)
+        if has10SecondWarning {
+            append(delay: exercise.duration - 10)
+            append(step: .announce("10 seconds left."))
+             append(delay: 5)
+        } else {
+            append(delay: exercise.duration - 5)
+        }
         append(countdownFrom: 5)
         append(step: .stopExercise)
     }

@@ -55,8 +55,12 @@ struct WorkoutView: View {
         if coach.workoutState == .active || coach.workoutState == .paused {
             return Text("Set \(coach.currentSet) of \(workout.numberOfSets)")
         } else {
-            return Text("\(workout.numberOfSets) sets")
+            return Text(format(sets: workout.numberOfSets))
         }
+    }
+    
+    func format(sets: Int) -> String {
+        "\(sets) \(sets == 1 ? "set" : "sets")"
     }
 }
 

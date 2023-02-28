@@ -12,6 +12,7 @@ struct EditView: View {
     @State private var newExerciseDuration = 30
     @State private var editMode: EditMode = .active
     @State private var exerciseName = ""
+    @State private var newExercises: [Exercise.Data] = []
     
     var body: some View {
         List {
@@ -37,9 +38,9 @@ struct EditView: View {
                 }
             }
             Section(header: exercisesListHeader) {
-                ForEach(Array(zip(workout.exercises.indices, workout.exercises)), id: \.0) { index, exercise in
+                ForEach($workout.exercises, id: \.self) { $exercise in
                     HStack {
-                        TextField("Name", text: $workout.exercises[index].name)
+                        TextField("Name", text: $exercise.name)
                         Spacer()
                         Text("\(Int(exercise.duration))s")
                     }
@@ -52,6 +53,9 @@ struct EditView: View {
                 })
             }
         }
+        .onAppear(perform: {
+            self.newExercises = workout.exercises
+        })
         .listStyle(InsetGroupedListStyle())
         .environment(\.editMode, $editMode)
     }
