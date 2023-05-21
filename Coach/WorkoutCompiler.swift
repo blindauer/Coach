@@ -36,7 +36,7 @@ class WorkoutCompiler {
             append(step: .announce("\(workout.numberOfSets) sets."))
             append(delay: 2)
         }
-                
+        
         for setNumber in 1...workout.numberOfSets {
             append(step: .setNumber(setNumber))
             if workout.numberOfSets > 1 {
@@ -98,9 +98,7 @@ class WorkoutCompiler {
     
     private func append(restTime: TimeInterval) {
         append(step: .announce("Rest: \(Int(restTime)) seconds."))
-        append(delay: restTime - 8)
-        append(step: .announce("Rest ending in 5."))
-        append(delay: 5)
+        append(delay: restTime)
     }
     
     private func randomCompleteMessage() -> String {
